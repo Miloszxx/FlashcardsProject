@@ -37,7 +37,26 @@ namespace FlashCardsProject
 						string json = JsonSerializer.Serialize(flashcards);
 						File.WriteAllText("flashcards.json", json);
 						break;
+					
+					case 2:
+						foreach (Flashcard flashcard in flashcards)
+						{
+							Console.WriteLine("Question: " + flashcard.question);
+							string answer = Console.ReadLine();
+							if (answer.ToLower().Trim() == flashcard.answer)
+							{
+								Console.WriteLine("Correct!");
+							}
+							else
+							{
+								Console.WriteLine("Incorrect! Correct answer is " +  flashcard.answer );
+							}
+						}
+
+						break;
+						
 				}
+				
 			}
 
 		}
