@@ -43,6 +43,7 @@ namespace FlashCardsProject
 					
 					case 2:
 						Console.Clear();
+						List<Flashcard> incorrect = new List<Flashcard>();
 						foreach (Flashcard flashcard in flashcards)
 						{
 							Console.WriteLine("Question: " + flashcard.question);
@@ -54,10 +55,22 @@ namespace FlashCardsProject
 							else
 							{
 								Console.WriteLine("Incorrect! Correct answer is " +  flashcard.answer );
+								incorrect.Add(flashcard);
 							}
 							System.Threading.Thread.Sleep(1000);
 							Console.Clear();
 
+						}
+
+						if (incorrect.Count > 0)
+						{
+							Console.Write("You need to study: ");
+							foreach (Flashcard flashcard in incorrect)
+							{
+								Console.WriteLine("\n");
+								Console.WriteLine(flashcard.question);
+								Console.WriteLine(flashcard.answer);
+							}
 						}
 
 						break;
