@@ -26,9 +26,10 @@ namespace FlashCardsProject
 				Console.WriteLine("2. Study mode");
 				Console.WriteLine("3. Exit");
 				choice = Convert.ToInt32(Console.ReadLine());
-				switch  (choice)
+				switch (choice)
 				{
 					case 1:
+					{
 						Console.WriteLine("Question:");
 						string question = Console.ReadLine();
 						Console.WriteLine("Answer:");
@@ -37,8 +38,11 @@ namespace FlashCardsProject
 						string json = JsonSerializer.Serialize(flashcards);
 						File.WriteAllText("flashcards.json", json);
 						break;
+						
+					}
 					
 					case 2:
+						Console.Clear();
 						foreach (Flashcard flashcard in flashcards)
 						{
 							Console.WriteLine("Question: " + flashcard.question);
@@ -51,10 +55,12 @@ namespace FlashCardsProject
 							{
 								Console.WriteLine("Incorrect! Correct answer is " +  flashcard.answer );
 							}
+							System.Threading.Thread.Sleep(1000);
+							Console.Clear();
+
 						}
 
 						break;
-						
 				}
 				
 			}
