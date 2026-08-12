@@ -44,11 +44,11 @@ namespace FlashCardsProject
 
 					case 2:
 						Console.WriteLine("Randomize flashcards order? y/n");
-						char input = Console.ReadKey().KeyChar;
+						string input = Console.ReadLine();
 						List<Flashcard> cardsToStudy;
 
 						
-						if (input == 'y')
+						if (input != null && input.ToLower().Trim() == "y")
 						{
 							cardsToStudy = flashcards.OrderBy(x => Random.Shared.Next()).ToList();
 						}
