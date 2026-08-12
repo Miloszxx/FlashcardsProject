@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FlashCardsProject
 {
@@ -40,11 +41,24 @@ namespace FlashCardsProject
 						break;
 						
 					}
-					
+
 					case 2:
+						Console.WriteLine("Randomize flashcards order? y/n");
+						char input = Console.ReadKey().KeyChar;
+						List<Flashcard> cardsToStudy;
+
+						if (input == 'y')
+						{
+							cardsToStudy = flashcards.OrderBy(x => Random.Shared.Next()).ToList();
+						}
+						else
+						{
+							cardsToStudy = flashcards; 
+						}
+							
 						Console.Clear();
 						List<Flashcard> incorrect = new List<Flashcard>();
-						foreach (Flashcard flashcard in flashcards)
+						foreach (Flashcard flashcard in cardsToStudy)
 						{
 							Console.WriteLine("Question: " + flashcard.question);
 							string answer = Console.ReadLine();
@@ -64,15 +78,14 @@ namespace FlashCardsProject
 
 						if (incorrect.Count > 0)
 						{
-							Console.Write("You need to study: ");
+							Console.WriteLine("You need to study: "); ;
 							foreach (Flashcard flashcard in incorrect)
 							{
-								Console.WriteLine("\n");
+								Console.WriteLine();
 								Console.WriteLine(flashcard.question);
 								Console.WriteLine(flashcard.answer);
 							}
-						}
-
+						} 
 						break;
 				}
 				
