@@ -1,114 +1,130 @@
-﻿using System; 
+﻿using System;
 using System.IO;
 using System.Text.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Spectre.Console;
 
 namespace FlashCardsProject
 {
-	class Program
-	{
-		static void Main(string[] args)
-		{
-			List<Flashcard> flashcards = new List<Flashcard>();
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<Flashcard> flashcards = new List<Flashcard>();
 
-			if (File.Exists("flashcards.json"))
-			{
-				string ImportedText = File.ReadAllText("flashcards.json");
-				flashcards = JsonSerializer.Deserialize<List<Flashcard>>(ImportedText);
-			}
+            if (File.Exists("flashcards.json"))
+            {
+                string ImportedText = File.ReadAllText("flashcards.json");
+                flashcards = JsonSerializer.Deserialize<List<Flashcard>>(ImportedText);
+            }
 
-			int choice = 0;
-			Console.Clear();
-			while (choice != 3)
-			{
-				Console.WriteLine("What would you like to do?");
-				Console.WriteLine("1. Add flashcard");
-				Console.WriteLine("2. Study mode");
-				Console.WriteLine("3. Exit");
-				if (!int.TryParse(Console.ReadLine(), out choice))
-				{
-					Console.WriteLine("Wrong input");
-					continue;
-				}
-				switch (choice)
-				{
-					case 1:
-					{
-						Console.WriteLine("Question:");
-						string question = Console.ReadLine();
-						Console.WriteLine("Answer:");
-						string answer = Console.ReadLine();
-						flashcards.Add(new Flashcard(question, answer));
-						string json = JsonSerializer.Serialize(flashcards);
-						File.WriteAllText("flashcards.json", json);
-						break;
-						
-					}
+            Console.Clear();
 
-					case 2:
-						Console.WriteLine("Randomize flashcards order? y/n");
-						string input = Console.ReadLine();
-						List<Flashcard> cardsToStudy;
 
-						
-						if (input != null && input.ToLower().Trim() == "y")
-						{
-							cardsToStudy = flashcards.OrderBy(x => Random.Shared.Next()).ToList();
-						}
-						else
-						{
-							cardsToStudy = flashcards; 
-						}
-						System.Threading.Thread.Sleep(1000);	
-						Console.Clear();
-						List<Flashcard> incorrect = new List<Flashcard>();
-						
-						foreach (Flashcard flashcard in cardsToStudy)
-						{
-							Console.WriteLine("Question: " + flashcard.question);
+            string choice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("[green]What would you like to do[/]?")
+                    .AddChoices(new[]
+                    {
+                        "Add flashcard",
+                        "Study mode",
+                        "Exit"
+                    })
+            );
+            switch (choice)
+            {
+                case "Add flashcard":
+                {
+                    Console.WriteLine("Question:");
+                    string question = Console.ReadLine();
+                    Console.WriteLine("Answer:");
+                    string answer = Console.ReadLine();
+                    flashcards.Add(new Flashcard(question, answer));
+                    string json = JsonSerializer.Serialize(flashcards);
+                    File.WriteAllText("flashcards.json", json);
+                    break;
+                }
 
-							while (true)
-							{
-								string answer = Console.ReadLine();
+                case "Study mode":
+                {
+                    List<Flashcard> cardsToStudy;
 
-								if (answer == "1")
-								{
-									Console.WriteLine("Word starts with: " + flashcard.answer[0]);
-									continue;
-								}
-								if (answer.ToLower().Trim() == flashcard.answer)
-								{
-									Console.WriteLine("Correct!");
-									break;
-								}
-								else
-								{
-									Console.WriteLine("Incorrect! Correct answer is " +  flashcard.answer );
-									incorrect.Add(flashcard);
-									break;
-								}
-							}
-							System.Threading.Thread.Sleep(1000);
-							Console.Clear();
-						}
+                    string input = AnsiConsole.Prompt(
+                        new SelectionPrompt<string>()
+                            .Title("Randomize flashcards order? \n")
+                            .AddChoices(new[]
+                            {
+                                "YES",
+                                "NO",
+                            })
+                    );
 
-						if (incorrect.Count > 0)
-						{
-							Console.WriteLine("You need to study: "); ;
-							foreach (Flashcard flashcard in incorrect)
-							{
-								Console.WriteLine();
-								Console.WriteLine(flashcard.question);
-								Console.WriteLine(flashcard.answer);
-							}
-							Console.WriteLine();
-						} 
-						break;
-				}
-				
-			}
+                    if (input == "YES")
+                    {
+                        cardsToStudy = flashcards.OrderBy(x => Random.Shared.Next()).ToList();
+                    }
+                    else
+                    {
+                        cardsToStudy = flashcards;
+                    }
 
-		}
-	}
+                    Console.Clear();
+                    List<Flashcard> incorrect = new List<Flashcard>();
+
+                    foreach (Flashcard flashcard in cardsToStudy)
+                    {
+                        AnsiConsole.Markup("[bold green]Question: [/]" + flashcard.question + "\n");
+
+                        while (true)
+                        {
+                            string answer = Console.ReadLine();
+
+                            if (answer == "1")
+                            {
+                                Console.WriteLine("Word starts with: " + flashcard.answer[0]);
+                                continue;
+                            }
+
+                            if (answer.ToLower().Trim() == flashcard.answer)
+                            {
+                                AnsiConsole.Markup("[bold green]Correct!\n[/]");
+                                break;
+                            }
+                            else
+                            {
+                                AnsiConsole.Markup("[bold red]Incorrect! [/] Correct answer is " + flashcard.answer);
+                                incorrect.Add(flashcard);
+                                System.Threading.Thread.Sleep(2000);
+                                break;
+                            }
+                        }
+
+                        System.Threading.Thread.Sleep(1000);
+                        Console.Clear();
+                    }
+
+                    if (incorrect.Count > 0)
+                    {
+                        AnsiConsole.Markup("[bold green]You need to study:\n[/]");
+                        
+                        foreach (Flashcard flashcard in incorrect)
+                        {
+                            Console.WriteLine();
+                            AnsiConsole.Markup("[bold green]"+ flashcard.question + "\n[/]");
+                            Console.WriteLine(flashcard.answer);
+                        }
+
+                        Console.WriteLine();
+                    }
+
+                    break;
+                }
+                case "Exit":
+                {
+                    break;
+                }
+            }
+        }
+    }
 }
