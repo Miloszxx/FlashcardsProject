@@ -67,19 +67,30 @@ namespace FlashCardsProject
 						foreach (Flashcard flashcard in cardsToStudy)
 						{
 							Console.WriteLine("Question: " + flashcard.question);
-							string answer = Console.ReadLine();
-							if (answer.ToLower().Trim() == flashcard.answer)
+
+							while (true)
 							{
-								Console.WriteLine("Correct!");
-							}
-							else
-							{
-								Console.WriteLine("Incorrect! Correct answer is " +  flashcard.answer );
-								incorrect.Add(flashcard);
+								string answer = Console.ReadLine();
+
+								if (answer == "1")
+								{
+									Console.WriteLine("Word starts with: " + flashcard.answer[0]);
+									continue;
+								}
+								if (answer.ToLower().Trim() == flashcard.answer)
+								{
+									Console.WriteLine("Correct!");
+									break;
+								}
+								else
+								{
+									Console.WriteLine("Incorrect! Correct answer is " +  flashcard.answer );
+									incorrect.Add(flashcard);
+									break;
+								}
 							}
 							System.Threading.Thread.Sleep(1000);
 							Console.Clear();
-
 						}
 
 						if (incorrect.Count > 0)
