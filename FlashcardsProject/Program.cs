@@ -19,14 +19,18 @@ namespace FlashCardsProject
 			}
 
 			int choice = 0;
-
+			Console.Clear();
 			while (choice != 3)
 			{
 				Console.WriteLine("What would you like to do?");
 				Console.WriteLine("1. Add flashcard");
 				Console.WriteLine("2. Study mode");
 				Console.WriteLine("3. Exit");
-				choice = Convert.ToInt32(Console.ReadLine());
+				if (!int.TryParse(Console.ReadLine(), out choice))
+				{
+					Console.WriteLine("Wrong input");
+					continue;
+				}
 				switch (choice)
 				{
 					case 1:
@@ -87,6 +91,7 @@ namespace FlashCardsProject
 								Console.WriteLine(flashcard.question);
 								Console.WriteLine(flashcard.answer);
 							}
+							Console.WriteLine();
 						} 
 						break;
 				}
