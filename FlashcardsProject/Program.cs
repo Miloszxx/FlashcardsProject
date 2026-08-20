@@ -16,7 +16,10 @@ namespace FlashCardsProject
             if (File.Exists("flashcards.json"))
             {
                 string ImportedText = File.ReadAllText("flashcards.json");
-                flashcards = JsonSerializer.Deserialize<List<Flashcard>>(ImportedText);
+                if (!string.IsNullOrWhiteSpace(ImportedText))
+                {
+                    flashcards = JsonSerializer.Deserialize<List<Flashcard>>(ImportedText) ?? new List<Flashcard>();
+                }
             }
 
             while (true)
