@@ -2,6 +2,8 @@
 
 A simple terminal app written in C# to create and review study flashcards. Card data is automatically saved to a local `flashcards.json` file.
 
+![Flashcards CLI Demo](assets/demo.gif)
+
 ## Features
 
 - **Add flashcards:** Quickly input new question and answer pairs.
