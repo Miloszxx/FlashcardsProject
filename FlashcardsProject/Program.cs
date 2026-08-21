@@ -145,17 +145,25 @@ namespace FlashCardsProject
                         }
                         
                         string[] lines = File.ReadAllLines("flashcards.txt");
-
+                        bool corrupted = false;
+                        int counter = 0;
                         foreach (string line in lines)
                         {
+                            if (string.IsNullOrWhiteSpace(line)) continue;
                             string[] parts = line.Split(';');
                             if (parts.Length != 2)
                             {
-                                AnsiConsole.Markup("[bold red] File flashcards.txt isn't formatted correctly. [/]");
-                                System.Threading.Thread.Sleep(2000);
-                                break;
+                                corrupted = true;
+                                counter++;
+                                continue;
                             }
-                            flashcards.Add(new Flashcard(parts[0], parts[1]));
+                            flashcards.Add(new Flashcard(parts[0].Trim(), parts[1].Trim()));
+                        }
+
+                        if (corrupted)
+                        {
+                            AnsiConsole.Markup("[bold red] File flashcards.txt isn't formatted correctly. Can't add [/]" + counter + "[bold red] flashcards [/]");
+                            System.Threading.Thread.Sleep(2000);
                         }
                         string json = JsonSerializer.Serialize(flashcards);
                         File.WriteAllText("flashcards.json", json);
