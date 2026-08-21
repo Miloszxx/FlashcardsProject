@@ -12,7 +12,7 @@ namespace FlashCardsProject
         static void Main(string[] args)
         {
             List<Flashcard> flashcards = new List<Flashcard>();
-
+            
             if (File.Exists("flashcards.json"))
             {
                 string ImportedText = File.ReadAllText("flashcards.json");
@@ -33,7 +33,8 @@ namespace FlashCardsProject
                         {
                             "Add flashcard",
                             "Study mode",
-                            "Exit"
+                            "Exit",
+                            "Import from .txt"
                         })
                 );
 
@@ -131,6 +132,33 @@ namespace FlashCardsProject
                             Console.ReadLine();
                         }
 
+                        break;
+                    }
+
+                    case "Import from .txt":
+                    {
+                        if (!File.Exists("flashcards.txt"))
+                        {
+                            AnsiConsole.Markup("[bold red] File flashcards.txt doesn't exist. [/]");
+                            System.Threading.Thread.Sleep(2000);
+                            break;
+                        }
+                        
+                        string[] lines = File.ReadAllLines("flashcards.txt");
+
+                        foreach (string line in lines)
+                        {
+                            string[] parts = line.Split(';');
+                            if (parts.Length != 2)
+                            {
+                                AnsiConsole.Markup("[bold red] File flashcards.txt isn't formatted correctly. [/]");
+                                System.Threading.Thread.Sleep(2000);
+                                break;
+                            }
+                            flashcards.Add(new Flashcard(parts[0], parts[1]));
+                        }
+                        string json = JsonSerializer.Serialize(flashcards);
+                        File.WriteAllText("flashcards.json", json);
                         break;
                     }
 
