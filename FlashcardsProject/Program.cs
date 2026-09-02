@@ -62,7 +62,7 @@ namespace FlashCardsProject
                         }
 
                         List<Flashcard> cardsToStudy;
-
+                        
                         string input = AnsiConsole.Prompt(
                             new SelectionPrompt<string>()
                                 .Title("Randomize flashcards order? \n")
@@ -84,11 +84,15 @@ namespace FlashCardsProject
 
                         Console.Clear();
                         List<Flashcard> incorrect = new List<Flashcard>();
+                        
+                        int FlashcardCounter = 0;
 
                         foreach (Flashcard flashcard in cardsToStudy)
                         {
+                            FlashcardCounter++;
+                            AnsiConsole.Markup("[bold green]" + FlashcardCounter + "/" + cardsToStudy.Count + " [/]");
                             AnsiConsole.Markup("[bold green]Question: [/]" + flashcard.question + "\n");
-
+                            
                             while (true)
                             {
                                 string answer = Console.ReadLine();
